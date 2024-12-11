@@ -1,0 +1,68 @@
+-- TOP 5 SHOW BY MOST VOTED
+SELECT
+	TITLE,
+    TYPE,
+    IMDB_VOTES,
+    IMDB_SCORE
+FROM netflix
+WHERE TYPE = 'SHOW'
+ORDER BY IMDB_VOTES DESC
+LIMIT 5;
+
+-- AVERAGE IMDB SCORE BY TYPE
+SELECT
+    TYPE,
+    AVG(IMDB_VOTES) as AVGScore
+FROM db_digidaw.netflix
+GROUP BY TYPE;
+
+-- COUNT TYPE BY FILM
+SELECT
+	TYPE,
+	COUNT(TITLE) AS COUNT_TITLE
+ FROM netflix
+ GROUP BY TYPE ;
+ 
+-- THE TITLE WITH THE HIGHEST IMDB SCORE RELEASED IN THE 2000s
+SELECT 
+	TITLE,
+	IMDB_SCORE,
+    RELEASE_YEAR
+FROM db_digidaw.netflix
+WHERE RELEASE_YEAR >= 2000
+ORDER BY IMDB_SCORE DESC;
+
+-- RANKING TITLE BY IMDB SCORE
+SELECT
+    title,
+    type,
+    imdb_score,
+    RANK() OVER (PARTITION BY Type ORDER BY imdb_score DESC) AS ranking
+FROM
+    netflix
+ORDER BY
+    ranking, imdb_score DESC;
+
+-- AVERAGE SCORE FOR EVERY GENRES
+SELECT
+	GENRE,
+    AVG(IMDB_SCORE) AS AVG_SCORE
+FROM netflix   
+GROUP BY GENRE 
+ORDER BY AVG_SCORE DESC;
+
+-- Age Certification Simplification
+SELECT  
+    CASE 
+        WHEN AGE_CERTIFICATION = 'PG' THEN 'Children'
+        WHEN AGE_CERTIFICATION = 'PG-13' THEN 'Teen'
+        WHEN AGE_CERTIFICATION IN ('R', 'TV-G', 'TV-Y', 'TV-PG', 'TV-14') THEN 'Adult' 
+        ELSE 'Unknown' 
+    END AS age_category,
+    genre,
+    COUNT(*) AS genre_count
+FROM netflix
+GROUP BY Genre ;
+
+
+
